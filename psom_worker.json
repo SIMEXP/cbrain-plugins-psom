@@ -3,7 +3,7 @@
   "tool-version": "0.13.4",
   "description": "An worker to execute PSOM tasks. Meant to be launched by PSOM itself.",
   "command-line": "psom_worker.py [OUTPUT_DIR] [WORKER_NUMBER]",
-  "docker-image": "poquirion/niak_boutique:0.1",
+  "docker-image": "poquirion/niak_boutique:0.2",
   "docker-index": "http://index.docker.io",
   "schema-version": "0.2",
   "inputs": [
@@ -15,7 +15,7 @@
       "command-line-key": "[OUTPUT_DIR]",
       "list": false,
       "optional": false,
-      "command-line-flag": "",
+      "command-line-flag": "-d",
       "required-inputs": [],
       "disabled-by-inputs": [],
       "default-value": null
@@ -28,7 +28,7 @@
       "command-line-key": "[WORKER_NUMBER]",
       "list": false,
       "optional": false,
-      "command-line-flag": "",
+      "command-line-flag": "-w",
       "required-inputs": [],
       "disabled-by-inputs": [],
       "default-value": null
