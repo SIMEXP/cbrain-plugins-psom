@@ -5,7 +5,7 @@
     "command-line": "source /opt/minc-itk4/minc-toolkit-config.sh; /home/niak/util/bin/niak_cmd.py [FILE_IN] [FOLDER_OUT] [OPT_PSOM_MAX_QUEUED] [OPT_SLICE_TIMING_TYPE_SCANNER] [OPT_SLICE_TIMING_TYPE_ACQUISITION] [OPT_SLICE_TIMING_DELAY_IN_TR] [OPT_RESAMPLE_VOL_VOXEL_SIZE] [OPT_T1_PREPROCESS_NU_CORRECT_ARG] [OPT_TIME_FILTER_HP] [OPT_TIME_FILTER_LP] [OPT_REGRESS_CONFOUNDS_FLAG_GSC] [OPT_REGRESS_CONFOUNDS_FLAG_SCRUBBING] [OPT_REGRESS_CONFOUNDS_THRE_FD] [OPT_SMOOTH_VOL_FWHM] [EXTRA_ARGS]",
     "docker-image": "poquirion/niak_boutique:0.1",
     "docker-index": "http://index.docker.io",
-    "schema-version": "0.2-snapshot",
+    "schema-version": "0.2",
     "inputs": [
         {
             "id": "file_in",
