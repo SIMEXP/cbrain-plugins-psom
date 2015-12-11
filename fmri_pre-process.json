@@ -37,7 +37,7 @@
             "command-line-key": "[OPT_PSOM_MAX_QUEUED]",
             "list": false,
             "optional": false,
-            "command-line-flag": "--opt-psom-max-queued",
+            "command-line-flag": "--opt-psom-max_queued",
             "default-value": 4
         },
         {
@@ -100,7 +100,7 @@
             "command-line-key": "[OPT_TIME_FILTER_HP]",
             "list": false,
             "optional": false,
-            "command-line-flag": "--opt-time_filter_hp",
+            "command-line-flag": "--opt-time_filter-hp",
             "default-value": 0.01
         },
         {
@@ -111,7 +111,7 @@
             "command-line-key": "[OPT_TIME_FILTER_LP]",
             "list": false,
             "optional": false,
-            "command-line-flag": "--opt-time_filter_lp",
+            "command-line-flag": "--opt-time_filter-lp",
             "default-value": "Inf"
         },
         {
