@@ -1,0 +1,680 @@
+
+<%-
+#
+# CBRAIN Project
+#
+# Copyright (C) 2008-2012
+# The Royal Institution for the Advancement of Learning
+# McGill University
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+-%>
+
+<%-
+# NOTE: This is a working template generated from a descriptor:
+# [Schema]         http://github.com/boutiques/boutiques-schema
+# [Schema version] 0.2
+# [Tool]           Niak_fmri_preprocess
+# [Version]        0.13.4
+# See the CbrainTask Programmer Guide (CBRAIN Wiki) for a more complete picture
+# of how CbrainTasks are constructed.
+-%>
+
+<% input_files = Userfile.find_all_by_id(params[:interface_userfile_ids]) rescue [] %>
+
+<%#
+  Generate a parameter label for HTML input with id +id+.
+  +name+ corresponds to the tool parameter name to display,
+  +optional+ indicates that the parameter is optional (or not) and
+  +flag+ is the parameter's command-line flag if available.
+%>
+<% label = lambda do |id, name, optional: false, flag: nil| %>
+  <label class="tsk-prm-lbl" for="<%= id.to_la_id %>">
+    <%= name %>
+    <% if flag %>
+      (<code class="cmd-flag"><%= flag %></code>)
+    <% end %>
+    <% unless optional %>
+      <span class="required">*</span>
+    <% end %>
+  </label>
+<% end %>
+
+<%#
+  Generate a generic parameter input field with HTML id +id+ and name +name+.
+  +type+ is the kind of input field to generate (text or hidden),
+  +value+ is the input field's initial value,
+  +optional+ indicates that the parameter is optional (and the name should not
+  directly be placed on the tag) and
+  +placeholder+ is the placeholder text to fill the input with while awaiting
+  user input
+%>
+<% input = lambda do |id, name, type: 'text', value: nil, optional: false, placeholder: nil| %>
+  <% value = @task.params[name.to_sym] if name && value.nil? %>
+  <input <% if id %>
+          id="<%= id.to_la_id %>"
+         <% end %>
+         class="tsk-prm-in"
+         type="<%= type %>"
+         <% if name %>
+           <%= optional ? 'data-name' : 'name' %>="<%= name.to_la %>"
+         <% end %>
+         <% if value %>
+           value="<%= value %>"
+         <% end %>
+         <% if placeholder %>
+           placeholder="<%= placeholder %>"
+         <% end %>
+  />
+<% end %>
+
+<%#
+  Generate a list of inputs suitable for a list parameter with HTML id +id+
+  and name +name+. +values+, +optional+ and +placeholder+ work similarly to
+  input's corresponding arguments.
+%>
+<% input_list = lambda do |id, name, values: nil, optional: false, placeholder: nil| %>
+  <%
+    values = @task.params[name.to_sym] if name && values.nil?
+    values = ([values] unless values.is_a?(Enumerable)).compact
+    first = values.pop
+  %>
+  <ul class="tsk-prm-list">
+    <li>
+      <%
+        input.(id, name,
+          value:       first,
+          optional:    optional,
+          placeholder: placeholder
+        )
+      %>
+      <span class="tsk-prm-add ui-icon ui-icon-plus"></span>
+    </li>
+    <% values.each do |value| %>
+      <li>
+        <%
+          input.(nil, name,
+            value:       value,
+            optional:    optional,
+            placeholder: placeholder
+          )
+        %>
+        <span class="tsk-prm-add ui-icon ui-icon-minus"></span>
+      </li>
+    <% end %>
+  </ul>
+<% end %>
+
+<%#
+  Generate a fancy checkbox for flag or optional parameters with HTML +id+.
+  If +name+ is given, a checkbox suitable for flag parameters is generated
+  while one for optional arguments is generated otherwhise. The checkbox's
+  initial state (checked or not) is +check+.
+%>
+<% checkbox = lambda do |id, name: nil, check: nil| %>
+  <%#
+    FIXME for some obscure reason, naming the 'check' parameter 'checked'
+    makes the first parameter (id) become nil regardless of the value passed
+    in. This only seems to occur in the context of Rails' template renderer.
+  %>
+  <%
+    id    = name ? id.to_la_id : "tsk-prm-opt-#{id}"
+    type  = name ? 'chk' : 'opt'
+  %>
+  <% if name %>
+    <% check = @task.params[name.to_sym] if check.nil? %>
+    <%#
+      As a checkbox's value is not sent if left unchecked, a hidden 'back' field
+      sends the unchecked state is used to send. Rails overwrites this 'back'
+      value with the checbox's when the checkbox is checked, as the checkbox is
+      after the 'back' field.
+    %>
+    <input class="tsk-prm-chk-in"
+           type="hidden"
+           name="<%= name.to_la %>"
+           value="0"
+    />
+    <input class="tsk-prm-chk"
+           type="checkbox"
+           id="<%= id %>"
+           name="<%= name.to_la %>"
+           value="1"
+           <% if check %>
+             checked="checked"
+           <% end %>
+    />
+  <% else %>
+    <input class="tsk-prm-opt"
+           type="checkbox"
+           id="<%= id %>"
+           <% if check %>
+             checked="checked"
+           <% end %>
+    />
+  <% end %>
+  <label class="tsk-prm-<%= type %>-lbl" for="<%= id %>">
+    <span class="tsk-prm-<%= type %>-icon ui-icon ui-icon-check"></span>
+  </label>
+<% end %>
+
+<%#
+  Generate a drop-down list for a set of +options+ (value, label pairs) with
+  HTML id +id+ and name +name+.
+  +nothing+ corresponds to the text displayed if +options+ is empty and
+  +optional+ indicates if the parameter is optional (or not)
+%>
+<% dropdown = lambda do |id, name, options = [], nothing: '(Nothing to select)', optional: false| %>
+  <% value = @task.params[name.to_sym] if name %>
+  <%
+    input.(id, name,
+      type:     'hidden',
+      value:    value,
+      optional: optional
+    )
+  %>
+  <div class="tsk-prm-sel">
+    <% if options.empty? %>
+      <span class="tsk-prm-sel-lbl disabled">
+        <%= nothing %>
+      </span>
+    <% else %>
+      <span class="tsk-prm-sel-icon ui-icon ui-icon-triangle-1-s"></span>
+      <span class="tsk-prm-sel-lbl">
+        <% if (pair = options.select { |o| o.first == value }.first) %>
+          <%= pair.last %>
+        <% end %>
+      </span>
+      <ul class="tsk-prm-sel-opt">
+        <% options.each do |value, label| %>
+          <li data-value="<%= value %>"><%= label %></li>
+        <% end %>
+      </ul>
+    <% end %>
+  </div>
+<% end %>
+
+<%# Generate a parameter's description block for +desc+ %>
+<% description = lambda do |desc| %>
+  <span class="tsk-prm-desc">
+    <%= desc %>
+  </span>
+<% end %>
+
+<%# Give a short (up to +max+ characters) representation of +list+ %>
+<%
+  short_repr = lambda do |list, max|
+    str = list.map(&:to_s).join(', ')
+    str.length <= max ? str : (str[0, max - 3] + '...')
+  end
+%>
+
+<div class="task-params">
+  <ul>
+    <% id = 'file_in' %>
+    <li class="<%= id %> tsk-prm file">
+      <%
+        # Name/Label
+        label.(id, %q{ Input files },
+          optional: false,
+          flag:     '--file_in'
+        )
+
+        # Automatic single file input
+        dropdown.(id, id,
+          [], nothing: short_repr.(input_files.map(&:name), 65),
+          optional: false
+        )
+
+        # Description
+        description.(<<-'DESC')
+          A directory containing input files.
+        DESC
+      %>
+    </li>
+
+    <% id = 'folder_out' %>
+    <li class="<%= id %> tsk-prm string">
+      <%
+        # Name/Label
+        label.(id, %q{ Output folder name },
+          optional: false,
+          flag:     '--folder_out'
+        )
+
+        # Input field
+        input.(id, id,
+          optional: false
+        )
+
+        # Description
+        description.(<<-'DESC')
+          The name of the output folder where results will be produced.
+        DESC
+      %>
+    </li>
+
+    <% id = 'psom_max_queued' %>
+    <li class="<%= id %> tsk-prm number">
+      <%
+        # Name/Label
+        label.(id, %q{ PSOM max queued },
+          optional: false,
+          flag:     '--opt-psom-max_queued'
+        )
+
+        # Input field
+        input.(id, id,
+          optional:    false,
+          placeholder: '0.0'
+        )
+
+        # Description
+        description.(<<-'DESC')
+          Number of threads to use.
+        DESC
+      %>
+    </li>
+
+    <% id = 'opt_slice_timing_type_scanner' %>
+    <li class="<%= id %> tsk-prm string">
+      <%
+        # Name/Label
+        label.(id, %q{ Slice timing type scanner },
+          optional: false,
+          flag:     '--opt-slice_timing-type_scanner'
+        )
+
+        # Input field
+        input.(id, id,
+          optional: false
+        )
+
+      %>
+    </li>
+
+    <% id = 'opt_slice_timing_type_acquisition' %>
+    <li class="<%= id %> tsk-prm string">
+      <%
+        # Name/Label
+        label.(id, %q{ Slice timing type acquisition },
+          optional: false,
+          flag:     '--opt-slice_timing-type_acquisition'
+        )
+
+        # Input field
+        input.(id, id,
+          optional: false
+        )
+
+      %>
+    </li>
+
+    <% id = 'opt_slice_timing_delay_in_tr' %>
+    <li class="<%= id %> tsk-prm number">
+      <%
+        # Name/Label
+        label.(id, %q{ Slice timing delay in tr },
+          optional: false,
+          flag:     '--opt-slice_timing-delay_in_tr'
+        )
+
+        # Input field
+        input.(id, id,
+          optional:    false,
+          placeholder: '0.0'
+        )
+
+      %>
+    </li>
+
+    <% id = 'opt_resample_vol_voxel_size' %>
+    <li class="<%= id %> tsk-prm number">
+      <%
+        # Name/Label
+        label.(id, %q{ Resample vol voxel size },
+          optional: false,
+          flag:     '--opt-resample_vol-voxel_size'
+        )
+
+        # Input field
+        input.(id, id,
+          optional:    false,
+          placeholder: '0.0'
+        )
+
+        # Description
+        description.(<<-'DESC')
+          The voxel size to use in the stereotaxic space.
+        DESC
+      %>
+    </li>
+
+    <% id = 'opt_t1_preprocess_nu_correct_arg' %>
+    <li class="<%= id %> tsk-prm string">
+      <%
+        # Name/Label
+        label.(id, %q{ T1 preprocess nu correct arg },
+          optional: false,
+          flag:     '--opt-t1_preprocess-nu_correct-arg'
+        )
+
+        # Input field
+        input.(id, id,
+          optional: false
+        )
+
+        # Description
+        description.(<<-'DESC')
+           Parameter for non-uniformity correction. 200 is a suggested value for 1.5T images, 75 for 3T images.
+        DESC
+      %>
+    </li>
+
+    <% id = 'opt_time_filter_hp' %>
+    <li class="<%= id %> tsk-prm number">
+      <%
+        # Name/Label
+        label.(id, %q{ Time filter hp },
+          optional: false,
+          flag:     '--opt-time_filter-hp'
+        )
+
+        # Input field
+        input.(id, id,
+          optional:    false,
+          placeholder: '0.0'
+        )
+
+        # Description
+        description.(<<-'DESC')
+          Cut-off frequency for high-pass filtering, or removal of low frequencies (in Hz).
+        DESC
+      %>
+    </li>
+
+    <% id = 'opt_time_filter_lp' %>
+    <li class="<%= id %> tsk-prm string">
+      <%
+        # Name/Label
+        label.(id, %q{ Time filter lp },
+          optional: false,
+          flag:     '--opt-time_filter-lp'
+        )
+
+        # Input field
+        input.(id, id,
+          optional: false
+        )
+
+        # Description
+        description.(<<-'DESC')
+          Cut-off frequency for low-pass filtering, or removal of high frequencies (in Hz).
+        DESC
+      %>
+    </li>
+
+    <% id = 'opt_regress_confounds_flag_gsc' %>
+    <li class="<%= id %> tsk-prm string">
+      <%
+        # Name/Label
+        label.(id, %q{ Regress confounds flag gsc },
+          optional: false,
+          flag:     '--opt-regress_confounds-flag_gsc'
+        )
+
+        # Input field
+        input.(id, id,
+          optional: false
+        )
+
+        # Description
+        description.(<<-'DESC')
+          Global signal regression.
+        DESC
+      %>
+    </li>
+
+    <% id = 'opt_regress_confounds_flag_scrubbing' %>
+    <li class="<%= id %> tsk-prm string">
+      <%
+        # Name/Label
+        label.(id, %q{ Regress confounds flag scrubbing. },
+          optional: false,
+          flag:     '--opt-regress_confounds-flag_scrubbing'
+        )
+
+        # Input field
+        input.(id, id,
+          optional: false
+        )
+
+      %>
+    </li>
+
+    <% id = 'opt_regress_confounds_thre_fd' %>
+    <li class="<%= id %> tsk-prm number">
+      <%
+        # Name/Label
+        label.(id, %q{ Regress confounds thre fd },
+          optional: false,
+          flag:     '--opt-regress_confounds-thre_fd'
+        )
+
+        # Input field
+        input.(id, id,
+          optional:    false,
+          placeholder: '0.0'
+        )
+
+        # Description
+        description.(<<-'DESC')
+          The threshold on frame displacement for scrubbing
+        DESC
+      %>
+    </li>
+
+    <% id = 'opt_smooth_vol_fwhm' %>
+    <li class="<%= id %> tsk-prm number">
+      <%
+        # Name/Label
+        label.(id, %q{ Smooth vol fwhm },
+          optional: false,
+          flag:     '--opt-smooth_vol-fwhm'
+        )
+
+        # Input field
+        input.(id, id,
+          optional:    false,
+          placeholder: '0.0'
+        )
+
+        # Description
+        description.(<<-'DESC')
+          Full-width at maximum (FWHM) of the Gaussian blurring kernel, in mm.
+        DESC
+      %>
+    </li>
+
+    <% id = 'extra_args' %>
+    <li class="<%= id %> tsk-prm string">
+      <%
+        # Name/Label
+        label.(id, %q{ Extra arguments },
+          optional: true
+        )
+
+        # Optional parameter enable/disable toggle
+        checkbox.(id)
+
+        # Input field
+        input.(id, id,
+          optional: true
+        )
+
+        # Description
+        description.(<<-'DESC')
+          Extra arguments passed to niak_cmd
+        DESC
+      %>
+    </li>
+
+  </ul>
+</div>
+
+<script type="application/javascript">
+$(function () {
+  "use strict";
+
+  var parameters = $('.tsk-prm');
+
+  /*
+   * Remove the checked attribute of checkboxes and use their internal
+   * state instead.
+   */
+  parameters.find("input[type='checkbox'][checked='checked']").each(function () {
+    $(this)
+      .removeAttr('checked')
+      .prop('checked', true);
+  });
+
+  /* Optional parameters */
+
+  /* Clicking on the parameter's checkbox toggles the parameter's state */
+  parameters.delegate('.tsk-prm-opt', 'change activate.tsk-prm', function () {
+    var opt   = $(this),
+        param = opt.parent();
+
+    /*
+     * When an optional parameter is enabled, add its name attribute
+     * (stored in a data-* field) to send them with the POST.
+     */
+    if (opt.prop('checked')) {
+      param.find('.tsk-prm-in').each(function () {
+        var name = $(this).data('name');
+
+        /* Lists need to be sent with [] for proper server-side handling */
+        if (param.hasClass('list')) name += '[]';
+
+        $(this).attr('name', name);
+      });
+
+    /*
+     * When an optional parameter is disabled, clear its value(s) and name
+     * attribute.
+     */
+    } else {
+      /* Main value and name attribute */
+      param
+        .find('.tsk-prm-in')
+        .removeAttr('name')
+        .val('');
+
+      /* Display value for drop-down inputs */
+      param
+        .find('.tsk-prm-sel-lbl')
+        .text('');
+
+      /* Remove all extra inputs in input lists */
+      param
+        .find('.tsk-prm-list > li')
+        .slice(1)
+        .remove();
+    }
+  });
+
+  /* Changing a parameter's value automatically marks it as active */
+  parameters.delegate('.tsk-prm-in', 'focus activate.tsk-prm', function () {
+    $(this)
+      .closest('.tsk-prm')
+      .find('.tsk-prm-opt')
+      .prop('checked', true)
+      .trigger('activate.tsk-prm');
+  });
+
+  /* Activate optional parameters with default values */
+  parameters.find(".tsk-prm-in[value]").trigger('activate.tsk-prm');
+
+  /* Drop-down lists */
+
+  /*
+   * Clicking anywhere but the drop-down closes it without changing the
+   * selection.
+   */
+  $('.task-params').click(function () {
+    $(this)
+      .find('.tsk-prm-sel-opt')
+      .hide();
+  });
+
+  /* Clicking on the drop-down's label or icon toggles its visibility */
+  parameters.delegate('.tsk-prm-sel', 'click', function (event) {
+    event.stopPropagation();
+
+    $(this)
+      .children('.tsk-prm-sel-opt')
+      .toggle();
+  });
+
+  /* Clicking on a drop-down item selects it */
+  parameters.delegate('.tsk-prm-sel-opt > li', 'click', function () {
+    var item  = $(this),
+        param = item.closest('.tsk-prm');
+
+    /* Set the backing input element's value */
+    param
+      .find('.tsk-prm-in')
+      .val(item.data('value'))
+      .trigger('activate.tsk-prm');
+
+    /* Display the newly selected value in the drop-down's label */
+    param
+      .find('.tsk-prm-sel-lbl')
+      .text(item.text());
+  });
+
+  /* Add/remove buttons for list parameters */
+
+  /* Clicking on a '+' button adds a new value row and enables the parameter */
+  parameters.delegate('.tsk-prm-add', 'click', function () {
+    var name = $(this)
+      .siblings('.tsk-prm-in')
+      .data('name');
+
+    $(this)
+      .closest('ul')
+      .append(
+        '<li>' +
+          '<input ' +
+            'class="tsk-prm-in" ' +
+            'type="text" ' +
+            'name="' + name + '" ' +
+            'data-name="' + name + '" ' +
+          '/> ' +
+          '<span class="tsk-prm-rm ui-icon ui-icon-minus"></span>' +
+        '</li>'
+      )
+      .siblings('.tsk-prm-opt')
+      .prop('checked', true)
+      .trigger('activate.tsk-prm');
+  });
+
+  /* Clicking on a '-' button removes the row */
+  parameters.delegate('.tsk-prm-rm', 'click', function () {
+    $(this)
+      .closest('li')
+      .remove();
+  });
+});
+</script>

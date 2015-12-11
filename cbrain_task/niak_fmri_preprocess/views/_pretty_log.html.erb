@@ -1,0 +1,37 @@
+<% color="#AAAAAA" %>
+<% width="0" %>
+<% message="Log not available." %>
+
+<% if @task.cluster_stdout %>
+
+  <% color="#0000FF" %>
+  <% width="0" %>
+  <% message="Execution not started." %>
+
+  <% @task.cluster_stdout.each_line do |line| %>
+    <% if /\([0-9]* run \/ [0-9]* fail \/ [0-9]* done \/ [0-9]* left\)/.match(line) %>
+      <% run = /[0-9]* run/.match(line)[0].to_s.split[0].to_f %>
+      <% done = /\/ [0-9]* done/.match(line)[0].to_s.split[1].to_f %>
+      <% failed = /\/ [0-9]* fail/.match(line)[0].to_s.split[1].to_f %>
+      <% left = /\/ [0-9]* left/.match(line)[0].to_s.split[1].to_f %>
+      <% width=100*(run+done+failed)/(run+done+failed+left) %>
+      <% red=255*(failed)/(failed+done+run) %>
+      <% green=255*(done+run).to_f/(failed+done+run).to_f %>
+      <% color="rgb(#{red.to_i},#{green.to_i},00)" %>
+      <% message="#{run.to_i} run / #{failed.to_i} fail / #{done.to_i} done / #{left.to_i} left" %>
+    <% end %>
+  <% end %>
+  <% end %>
+
+PSOM status: 
+<div id="container" style="width:100%; height:50px; border:1px solid black;">
+   <div id="progress-bar" style="width:<%= width %>%;
+				background-color:<%= color %>;
+				height:50px">
+    <br>
+    <center>
+      <%= width.to_i %>%
+    </center>
+  </div>
+ </div>
+ <%= message %>
