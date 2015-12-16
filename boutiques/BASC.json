@@ -1,0 +1,49 @@
+{
+	"name": "Niak_stability_rest",
+	"tool-version": "0.13.4",
+	"description": "BASC pipeline as available in Niak. More information at https://github.com/SIMEXP/niak",
+	"command-line": "/home/niak/util/bin/niak_cmd.py Niak_stability_rest [FILE_IN] [FOLDER_OUT] [OPT_PSOM_MAX_QUEUED]",
+	"docker-image": "poquirion/niak_boutique:0.6",
+	"docker-index": "http://index.docker.io",
+	"cbrain:can-submit-new-tasks": true,
+	"schema-version": "0.2",
+	"inputs": [{
+			"id": "file_in",
+			"name": "Input files",
+			"type": "File",
+			"description": "The outputs of Niak fmri_preprocess",
+			"command-line-key": "[FILE_IN]",
+			"list": false,
+			"optional": false,
+			"command-line-flag": "--file_in"
+		}, {
+			"id": "folder_out",
+			"name": "Output folder name",
+			"type": "String",
+			"description": "The name of the output folder where results will be produced.",
+			"command-line-key": "[FOLDER_OUT]",
+			"list": false,
+			"optional": false,
+			"command-line-flag": "--folder_out",
+			"default-value": "basc-results"
+		}, {
+			"id": "psom_max_queued",
+			"name": "PSOM max queued",
+			"type": "Number",
+			"description": "Number of threads to use.",
+			"command-line-key": "[OPT_PSOM_MAX_QUEUED]",
+			"list": false,
+			"optional": true,
+			"command-line-flag": "--opt-psom-max_queued",
+			"default-value": 4
+		}
+	],
+	"output-files": [{
+		"id": "folder_out",
+		"name": "Output folder",
+		"description": "A folder containing the output files.",
+		"path-template": "[FOLDER_OUT]",
+		"list": false,
+		"optional": false
+	}]
+}
