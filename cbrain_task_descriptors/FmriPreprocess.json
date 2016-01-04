@@ -6,6 +6,7 @@
 	"docker-image": "poquirion/niak_boutique:0.6",
 	"docker-index": "http://index.docker.io",
 	"cbrain:can-submit-new-tasks": true,
+        "cbrain:inherits-from-class": "CbrainTask::PsomPipelineTask",
 	"schema-version": "0.2",
 	"inputs": [{
 			"id": "file_in",
@@ -55,7 +56,7 @@
 			"command-line-flag": "--opt-granularity",
 			"default-value": "max"
 		}, {
-			"id": "opt-corsica-sica-nb_comp",
+			"id": "opt_corsica_sica_nb_comp",
 			"name": "Correction of the physiological noise based on automatic component selection in an independent component analysis. Number of components to compute.",
 			"type": "Number",
 			"command-line-key": "[OPT_CORSICA_SICA_NB_COMP]",
@@ -63,7 +64,7 @@
 			"optional": true,
 			"command-line-flag": "--opt-corsica-sica-nb_comp"
 		}, {
-			"id": "opt-corsica-threshhold",
+			"id": "opt_corsica_threshhold",
 			"name": "Correction of the physiological noise based on automatic component selection in an independent component analysis. Threshold on score for suppression.",
 			"type": "Number",
 			"command-line-key": "[OPT_CORSICA_THRESHOLD]",
@@ -72,9 +73,9 @@
 			"command-line-flag": "--opt-corsica-threshhold",
 			"default-value": 0.15
 		}, {
-			"id": "opt-corsica-flag_skip",
+			"id": "opt_corsica_flag_skip",
 			"name": "Correction of the physiological noise based on automatic component selection in an independent component analysis. If true, the brick does not do anything, just copying the inputs to the outputs.",
-			"type": "string",
+			"type": "String",
 			"command-line-key": "[OPT_CORSICA_FLAG_SKIP]",
 			"list": false,
 			"optional": true,

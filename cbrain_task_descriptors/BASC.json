@@ -6,6 +6,7 @@
 	"docker-image": "poquirion/niak_boutique:0.6",
 	"docker-index": "http://index.docker.io",
 	"cbrain:can-submit-new-tasks": true,
+        "cbrain:inherits-from-class": "CbrainTask::PsomPipelineTask",
 	"schema-version": "0.2",
 	"inputs": [{
 			"id": "file_in",
