@@ -2,7 +2,7 @@
     "name": "Niak_fmri_preprocess",
     "tool-version": "0.13.4",
     "description": "fMRI pre-processing pipeline as available in Niak. More information at https://github.com/SIMEXP/niak",
-    "command-line": "/home/niak/util/bin/niak_cmd.py Niak_fmri_preprocess [FILE_IN] [FOLDER_OUT] [OPT_PSOM_MAX_QUEUED] [OPT_SLICE_TIMING_TYPE_SCANNER] [OPT_SLICE_TIMING_TYPE_ACQUISITION] [OPT_SLICE_TIMING_DELAY_IN_TR] [OPT_RESAMPLE_VOL_VOXEL_SIZE] [OPT_T1_PREPROCESS_NU_CORRECT_ARG] [OPT_TIME_FILTER_HP] [OPT_TIME_FILTER_LP] [OPT_REGRESS_CONFOUNDS_FLAG_GSC] [OPT_REGRESS_CONFOUNDS_FLAG_SCRUBBING] [OPT_REGRESS_CONFOUNDS_THRE_FD] [OPT_SMOOTH_VOL_FWHM] [OPT_CORSICA_SICA_NB_COMP] [OPT_CORSICA_THRESHOLD] [OPT_CORSICA_FLAG_SKIP] [EXTRA_ARGS]",
+    "command-line": "/home/niak/util/bin/niak_cmd.py Niak_fmri_preprocess [FILE_IN] [FOLDER_OUT] [OPT_PSOM_MAX_QUEUED] [OPT_SLICE_TIMING_TYPE_SCANNER] [OPT_SLICE_TIMING_TYPE_ACQUISITION] [OPT_SLICE_TIMING_DELAY_IN_TR] [OPT_RESAMPLE_VOL_VOXEL_SIZE] [OPT_T1_PREPROCESS_NU_CORRECT_ARG] [OPT_TIME_FILTER_HP] [OPT_TIME_FILTER_LP] [OPT_REGRESS_CONFOUNDS_FLAG_GSC] [OPT_REGRESS_CONFOUNDS_FLAG_SCRUBBING] [OPT_REGRESS_CONFOUNDS_THRE_FD] [OPT_SMOOTH_VOL_FWHM] [OPT_CORSICA_SICA_NB_COMP] [OPT_CORSICA_THRESHOLD] [OPT_CORSICA_FLAG_SKIP] [OPT_SIZE_OUTPUT] [OPT_MOTION_CORRECTION_SUPPRESS_VOL] [EXTRA_ARGS]",
     "docker-image": "poquirion/niak_boutique:0.6",
     "docker-index": "http://index.docker.io",
     "cbrain:can-submit-new-tasks": true,
@@ -48,7 +48,7 @@
         "default-value": "Bruker"
     }, {
         "id": "opt_granularity",
-	"name": "Granularity",
+        "name": "Granularity",
         "description": "Level of granularity of the pipeline",
         "type": "String",
         "command-line-key": "[OPT_SLICE_TIMING_TYPE_SCANNER]",
@@ -183,6 +183,27 @@
         "command-line-flag": "--opt-smooth_vol-fwhm",
         "default-value": 6
     }, {
+        "id": "opt_size_output",
+        "name": "Size output",
+        "type": "String",
+        "description":"The quantity of intermediate results that are generated.",
+        "command-line-key": "[OPT_SIZE_OUTPUT]",
+        "list": false,
+        "optional": true,
+        "command-line-flag": "--opt-size_output",
+        "default-value": "description"
+        
+    }, {
+        "id": "opt_motion_correction_suppress_vol",
+        "name": "Motion correction suppress vol",
+        "type": "Number",
+        "description": "The number of volumes that are suppressed at the beginning of a time series",
+        "command-line-key": "[OPT_MOTION_CORRECTION_SUPPRESS_VOL]",
+        "list": false,
+        "optional": true,
+        "command-line-flag": "--opt-motion_correction-suppress_vol",
+        "default-value": 0 
+    }, {
         "id": "extra_args",
         "name": "Extra arguments",
         "type": "String",
@@ -191,7 +212,6 @@
         "list": false,
         "optional": true
     }
-
               ],
     "output-files": [{
         "id": "folder_out",
