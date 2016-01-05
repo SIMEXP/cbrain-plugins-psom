@@ -191,7 +191,7 @@
         "list": false,
         "optional": true,
         "command-line-flag": "--opt-size_output",
-        "default-value": "description"
+        "default-value": "quality_control"
         
     }, {
         "id": "opt_motion_correction_suppress_vol",
