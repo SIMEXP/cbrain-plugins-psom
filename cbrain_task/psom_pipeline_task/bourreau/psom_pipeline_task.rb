@@ -29,7 +29,7 @@ class CbrainTask::PsomPipelineTask < ClusterTask
   # some clusters whe task is not finished).
   def stdout_cluster_filename(run_number=nil)
     stdout_file_name = super(run_number)
-    return stdout_file_name if File.exists?(stdout_file_name)
+    return stdout_file_name if stdout_file_name.present? && File.exists?(stdout_file_name)
     return File.join(self.full_cluster_workdir,"results-directory","logs","PIPE_history.txt")
   end
 
