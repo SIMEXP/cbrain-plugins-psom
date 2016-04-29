@@ -23,7 +23,8 @@
 class CbrainTask::PsomPipelineTask < PortalTask
 
   Revision_info=CbrainFileRevision[__FILE__] #:nodoc:
-
+ 
+  # Populates the progress bar by reading in the stdout
   def progress_info
 
     color="#AAAAAA"
