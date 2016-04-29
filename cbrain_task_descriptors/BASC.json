@@ -121,7 +121,7 @@
 			"id": "flag_ind",
 			"name": "Flag ind",
 			"type": "Flag",
-                        "optional": false,
+                        "optional": true,
 			"description": "Generate maps/time series at the individual level.",
 			"command-line-key": "[FLAG_IND]",
 			"command-line-flag": "--opt-flag_ind"
@@ -129,7 +129,7 @@
 			"id": "flag_mixed",
 			"name": "Flag mixed",
 			"type": "Flag",
-                        "optional": false,
+                        "optional": true,
 			"description": "Generate maps/time series at the mixed level (group-level networks mixed with individual stability matrices).",
 			"command-line-key": "[FLAG_MIXED]",
 			"command-line-flag": "--opt-flag_mixed"
@@ -137,7 +137,7 @@
 			"id": "flag_group",
 			"name": "Flag group",
 			"type": "Flag",
-                        "optional": false,
+                        "optional": true,
 			"description": "Generate maps/time series at the group level",
 			"command-line-key": "[FLAG_GROUP]",
 			"command-line-flag": "--opt-flag_group"
