@@ -1,9 +1,9 @@
 {
 	"name": "Niak_stability_rest",
-	"tool-version": "0.13.4",
+	"tool-version": "0.13.5",
 	"description": "BASC pipeline as available in Niak. More information at https://github.com/SIMEXP/niak",
 	"command-line": "/home/niak/util/bin/niak_cmd.py Niak_stability_rest [FILE_IN] [FOLDER_OUT] [OPT_PSOM_MAX_QUEUED] [MIN_NB_VOL] [MIN_XCORR_FUNC] [MIN_XCORR_ANAT] [EXCLUDE_SUBJECT] [REGION_GROWING-THRE_SIZE] [GRID_SCALE] [STABILITY_TSERIES-NB_AMPS] [STABILITY_GROUP-NB_AMPS] [FLAG_IND] [FLAG_MIXED] [FLAG_GROUP]",
-	"docker-image": "poquirion/boutique_manu:latest",
+	"docker-image": "simexp/boutique:latest",
 	"docker-index": "http://index.docker.io",
 	"cbrain:can-submit-new-tasks": true,
         "cbrain:inherits-from-class": "CbrainTask::PsomPipelineTask",
