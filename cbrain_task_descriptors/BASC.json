@@ -31,7 +31,7 @@
 			"id": "psom_max_queued",
 			"name": "PSOM max queued",
 			"type": "Number",
-			"description": "Number of threads to use.",
+			"description": "Number of workers to use in PSOM. This is the maximum number of computing nodes that the pipeline will use. It should be adjusted depending on the number of subjects to be processed. Use the default value if you don't know how to set this parameter.",
 			"command-line-key": "[OPT_PSOM_MAX_QUEUED]",
 			"list": false,
 			"optional": true,
