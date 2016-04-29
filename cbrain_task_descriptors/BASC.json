@@ -79,7 +79,7 @@
 			"default-value": 0.5
 		}, {
 			"id": "region_growing_thre_size",
-			"name": "Grid scale",
+			"name": "Region growing threshold size",
 			"type": "String",
 			"description": "Size of the regions, when they stop growing. A threshold of 1000 mm3 (default) will give about 1000 regions on the grey matter.",
 			"command-line-key": "[REGION_GROWING-THRE_SIZE]",
