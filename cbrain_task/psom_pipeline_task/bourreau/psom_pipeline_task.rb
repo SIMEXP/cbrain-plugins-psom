@@ -24,4 +24,13 @@ class CbrainTask::PsomPipelineTask < ClusterTask
 
   Revision_info=CbrainFileRevision[__FILE__] #:nodoc:
   
+  # Overrides stdout_cluster_filename to look for PIPE_history.txt in
+  # Niak's output in case stdout file is not here (which happens on
+  # some clusters whe task is not finished).
+  def stdout_cluster_filename(run_number=nil)
+    stdout_file_name = super(run_number)
+    return stdout_file_name if File.exists?(stdout_file_name)
+    return File.join(self.full_cluster_workdir,"results-directory","logs","PIPE_history.txt")
+  end
+
 end
