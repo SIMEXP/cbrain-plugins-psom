@@ -3,7 +3,7 @@
 	"tool-version": "0.13.4",
 	"description": "BASC pipeline as available in Niak. More information at https://github.com/SIMEXP/niak",
 	"command-line": "/home/niak/util/bin/niak_cmd.py Niak_stability_rest [FILE_IN] [FOLDER_OUT] [OPT_PSOM_MAX_QUEUED]",
-	"docker-image": "poquirion/boutique_manu:0.0",
+	"docker-image": "poquirion/boutique_manu:latest",
 	"docker-index": "http://index.docker.io",
 	"cbrain:can-submit-new-tasks": true,
         "cbrain:inherits-from-class": "CbrainTask::PsomPipelineTask",
