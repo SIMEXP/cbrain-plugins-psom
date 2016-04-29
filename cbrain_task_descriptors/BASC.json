@@ -96,7 +96,7 @@
 			"list": true,
 			"optional": false,
 			"command-line-flag": "--opt-region_growing-thre_size",
-			"default-value": "10:10:100 120:20:200 240:40:500"
+			"default-value": ["10:10:100", "120:20:200", "240:40:500"]
 		}, {
 			"id": "stability_tseries_nb_samps",
 			"name": "Individual bootstrap samples",
@@ -121,6 +121,7 @@
 			"id": "flag_ind",
 			"name": "Flag ind",
 			"type": "Flag",
+                        "optional": false,
 			"description": "Generate maps/time series at the individual level.",
 			"command-line-key": "[FLAG_IND]",
 			"command-line-flag": "--opt-flag_ind"
@@ -128,6 +129,7 @@
 			"id": "flag_mixed",
 			"name": "Flag mixed",
 			"type": "Flag",
+                        "optional": false,
 			"description": "Generate maps/time series at the mixed level (group-level networks mixed with individual stability matrices).",
 			"command-line-key": "[FLAG_MIXED]",
 			"command-line-flag": "--opt-flag_mixed"
@@ -135,6 +137,7 @@
 			"id": "flag_group",
 			"name": "Flag group",
 			"type": "Flag",
+                        "optional": false,
 			"description": "Generate maps/time series at the group level",
 			"command-line-key": "[FLAG_GROUP]",
 			"command-line-flag": "--opt-flag_group"
