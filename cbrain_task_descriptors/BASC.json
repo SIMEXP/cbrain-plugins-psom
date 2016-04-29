@@ -78,7 +78,7 @@
 			"command-line-flag": "--opt-g-exclude_subject",
 			"default-value": 0.5
 		}, {
-			"id": "region_growing-thre_size",
+			"id": "region_growing_thre_size",
 			"name": "Grid scale",
 			"type": "String",
 			"description": "Size of the regions, when they stop growing. A threshold of 1000 mm3 (default) will give about 1000 regions on the grey matter.",
@@ -98,7 +98,7 @@
 			"command-line-flag": "--opt-region_growing-thre_size",
 			"default-value": "10:10:100 120:20:200 240:40:500"
 		}, {
-			"id": "stability_tseries-nb_samps",
+			"id": "stability_tseries_nb_samps",
 			"name": "Individual bootstrap samples",
 			"type": "String",
 			"description": "Number of bootstrap samples at the individual level.",
@@ -108,7 +108,7 @@
 			"command-line-flag": "--opt-stability_tseries-nb_samps",
 			"default-value": 100
 		}, {
-			"id": "stability_group-nb_samps",
+			"id": "stability_group_nb_samps",
 			"name": "Group bootstrap samples",
 			"type": "String",
 			"description": "Number of bootstrap samples at the group level.",
