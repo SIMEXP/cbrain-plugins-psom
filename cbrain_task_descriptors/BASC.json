@@ -93,10 +93,10 @@
 			"type": "String",
 			"description": "search for stable clusters in a given range",
 			"command-line-key": "[GRID_SCALE]",
-			"list": true,
+			"list": false,
 			"optional": false,
 			"command-line-flag": "--opt-grid_scales",
-			"default-value": ["10:10:100", "120:20:200", "240:40:500"]
+			"default-value": "[10:10:100 120:20:200 240:40:500]"
 		}, {
 			"id": "stability_tseries_nb_samps",
 			"name": "Individual bootstrap samples",
