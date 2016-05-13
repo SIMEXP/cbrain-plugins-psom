@@ -45,7 +45,7 @@
 			"command-line-key": "[MIN_NB_VOL]",
 			"list": false,
 			"optional": true,
-			"command-line-flag": "--opt-g-min_nb_vol",
+			"command-line-flag": "--opt_g-min_nb_vol",
 			"default-value": 100
 		}, {
 			"id": "min_xcorr_func",
@@ -55,7 +55,7 @@
 			"command-line-key": "[MIN_XCORR_FUNC]",
 			"list": false,
 			"optional": true,
-			"command-line-flag": "--opt-g-min-xcorr-func",
+			"command-line-flag": "--opt_g-min-xcorr-func",
 			"default-value": 0.5
 		}, {
 			"id": "min_xcorr_anat",
@@ -65,7 +65,7 @@
 			"command-line-key": "[MIN_XCORR_ANAT]",
 			"list": false,
 			"optional": true,
-			"command-line-flag": "--opt-g-min-xcorr-anat",
+			"command-line-flag": "--opt_g-min-xcorr-anat",
 			"default-value": 0.5
 		}, {
 			"id": "exclude_subject",
@@ -75,7 +75,7 @@
 			"command-line-key": "[EXCLUDE_SUBJECT]",
 			"list": true,
 			"optional": true,
-			"command-line-flag": "--opt-g-exclude_subject",
+			"command-line-flag": "--opt_g-exclude_subject",
 			"default-value": 0.5
 		}, {
 			"id": "region_growing_thre_size",
