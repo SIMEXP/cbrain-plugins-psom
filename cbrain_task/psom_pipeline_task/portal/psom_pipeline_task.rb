@@ -67,7 +67,7 @@ class CbrainTask::PsomPipelineTask < PortalTask
         end
       end
     end 
-    return {:color => color,:progress => progress, :message => message, :show_progress => true}
+    return {:color => color,:percentage => progress, :message => message, :show_percentage => true}
   end
   
 end
