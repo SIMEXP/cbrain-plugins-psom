@@ -21,12 +21,12 @@
         "id": "folder_out",
         "name": "Output folder name",
         "type": "String",
-        "description": "The name of the output folder where results will be produced.",
+        "description": "The name of the output folder where results will be produced. Be careful, if a folder with the same name alreay exists on the same data provider, it's content will be overwritten. Output folder name must end with '.niak' for CBRAIN to use the correct file type.",
         "command-line-key": "[FOLDER_OUT]",
         "list": false,
         "optional": false,
         "command-line-flag": "--folder_out",
-        "default-value": "results-directory"
+        "default-value": "results-directory.niak"
     }, {
         "id": "psom_max_queued",
         "name": "PSOM max queued",
