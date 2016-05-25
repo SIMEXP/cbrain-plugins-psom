@@ -75,8 +75,7 @@
 			"command-line-key": "[EXCLUDE_SUBJECT]",
 			"list": true,
 			"optional": true,
-			"command-line-flag": "--opt_g-exclude_subject",
-			"default-value": 0.5
+			"command-line-flag": "--opt_g-exclude_subject"
 		}, {
 			"id": "region_growing_thre_size",
 			"name": "Region growing threshold size",
