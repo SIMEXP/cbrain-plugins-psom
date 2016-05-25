@@ -1,4 +1,5 @@
 
+<%-
 #
 # CBRAIN Project
 #
@@ -19,20 +20,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+-%>
 
-# Model for Niak results.
-class NiakResult < FileCollection
 
-  Revision_info=CbrainFileRevision[__FILE__] #:nodoc:
+<br/>
 
-  has_viewer :name => "Niak Viewer",  :partial => :niak_viewer
+Under construction. When Niak produces HTML analysis reports, they will be available here.
 
-  def self.pretty_type #:nodoc:
-    "Niak result"
-  end
-
-  def self.file_name_pattern #:nodoc:
-    /\.niak$/i
-  end
-
-end

@@ -1,4 +1,5 @@
 
+<%-
 #
 # CBRAIN Project
 #
@@ -17,22 +18,14 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.  
 #
+-%>
 
-# Model for Niak results.
-class NiakResult < FileCollection
 
-  Revision_info=CbrainFileRevision[__FILE__] #:nodoc:
+<% if @userfile.is_locally_synced? %>
+Under construction. When Niak produces HTML analysis reports, they will be available here for QC.
+<% else %>
+This file must be synced locally to view QC data.
+<% end %>
 
-  has_viewer :name => "Niak Viewer",  :partial => :niak_viewer
-
-  def self.pretty_type #:nodoc:
-    "Niak result"
-  end
-
-  def self.file_name_pattern #:nodoc:
-    /\.niak$/i
-  end
-
-end
