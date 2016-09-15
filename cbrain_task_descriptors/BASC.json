@@ -3,7 +3,7 @@
 	"tool-version": "0.13.5",
 	"description": "BASC pipeline as available in Niak. More information at https://github.com/SIMEXP/niak",
 	"command-line": "/home/niak/util/bin/niak_cmd.py Niak_stability_rest [FILE_IN] [FOLDER_OUT] [OPT_PSOM_MAX_QUEUED] [MIN_NB_VOL] [MIN_XCORR_FUNC] [MIN_XCORR_ANAT] [EXCLUDE_SUBJECT] [REGION_GROWING-THRE_SIZE] [GRID_SCALE] [STABILITY_TSERIES-NB_AMPS] [STABILITY_GROUP-NB_AMPS] [FLAG_IND] [FLAG_MIXED] [FLAG_GROUP]",
-	"docker-image": "simexp/boutique:latest",
+	"docker-image": "simexp/niak-boss:beta",
 	"docker-index": "http://index.docker.io",
 	"cbrain:can-submit-new-tasks": true,
 	"cbrain:inherits-from-class": "CbrainTask::PsomPipelineTask",
@@ -21,12 +21,12 @@
 			"id": "folder_out",
 			"name": "Output folder name",
 			"type": "String",
-			"description": "The name of the output folder where results will be produced.",
+                        "description": "The name of the output folder where results will be produced. Be careful, if a folder with the same name alreay exists on the same data provider, it's content will be overwritten. Output folder name must end with '.niak' for CBRAIN to use the correct file type.",
 			"command-line-key": "[FOLDER_OUT]",
 			"list": false,
 			"optional": false,
 			"command-line-flag": "--folder_out",
-			"default-value": "basc-results"
+			"default-value": "basc-results.niak"
 		}, {
 			"id": "psom_max_queued",
 			"name": "PSOM max queued",
@@ -75,8 +75,7 @@
 			"command-line-key": "[EXCLUDE_SUBJECT]",
 			"list": true,
 			"optional": true,
-			"command-line-flag": "--opt_g-exclude_subject",
-			"default-value": 0.5
+			"command-line-flag": "--opt_g-exclude_subject"
 		}, {
 			"id": "region_growing_thre_size",
 			"name": "Region growing threshold size",

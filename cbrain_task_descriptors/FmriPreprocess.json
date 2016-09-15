@@ -3,7 +3,7 @@
     "tool-version": "0.13.5",
     "description": "fMRI pre-processing pipeline as available in Niak. More information at https://github.com/SIMEXP/niak",
     "command-line": "/home/niak/util/bin/niak_cmd.py Niak_fmri_preprocess [FILE_IN] [FOLDER_OUT] [OPT_PSOM_MAX_QUEUED] [OPT_SLICE_TIMING_TYPE_SCANNER] [OPT_SLICE_TIMING_TYPE_ACQUISITION] [OPT_SLICE_TIMING_DELAY_IN_TR] [OPT_RESAMPLE_VOL_VOXEL_SIZE] [OPT_T1_PREPROCESS_NU_CORRECT_ARG] [OPT_TIME_FILTER_HP] [OPT_TIME_FILTER_LP] [OPT_REGRESS_CONFOUNDS_FLAG_GSC] [OPT_REGRESS_CONFOUNDS_FLAG_SCRUBBING] [OPT_REGRESS_CONFOUNDS_THRE_FD] [OPT_SMOOTH_VOL_FWHM] [SUBJECTS] [OPT_CORSICA_SICA_NB_COMP] [OPT_CORSICA_THRESHOLD] [OPT_CORSICA_FLAG_SKIP] [OPT_SIZE_OUTPUT] [OPT_MOTION_CORRECTION_SUPPRESS_VOL] [OPT_GRANULARITY] [EXTRA_ARGS]",
-    "docker-image": "simexp/boutique:1.0",
+    "docker-image": "simexp/niak-boss:beta",
     "docker-index": "http://index.docker.io",
     "cbrain:can-submit-new-tasks": true,
     "cbrain:inherits-from-class": "CbrainTask::PsomPipelineTask",
@@ -21,12 +21,12 @@
         "id": "folder_out",
         "name": "Output folder name",
         "type": "String",
-        "description": "The name of the output folder where results will be produced.",
+        "description": "The name of the output folder where results will be produced. Be careful, if a folder with the same name alreay exists on the same data provider, it's content will be overwritten. Output folder name must end with '.niak' for CBRAIN to use the correct file type.",
         "command-line-key": "[FOLDER_OUT]",
         "list": false,
         "optional": false,
         "command-line-flag": "--folder_out",
-        "default-value": "results-directory"
+        "default-value": "results-directory.niak"
     }, {
         "id": "psom_max_queued",
         "name": "PSOM max queued",

@@ -23,18 +23,22 @@
 class CbrainTask::PsomPipelineTask < PortalTask
 
   Revision_info=CbrainFileRevision[__FILE__] #:nodoc:
- 
+
+  def show_progress_bar?
+    true
+  end
+  
   # Populates the progress bar by reading in the stdout
   def progress_info
 
     color="#AAAAAA"
-    percentage=0
+    progress=0
     message="Log not available."
 
     if self.cluster_stdout
 
       color="blue"
-      percentage=0
+      progress=0
       message="Execution not started."
 
       self.cluster_stdout.each_line do |line| 
@@ -43,27 +47,27 @@ class CbrainTask::PsomPipelineTask < PortalTask
           done = /\/ [0-9]* done/.match(line)[0].to_s.split[1].to_f
           failed = /\/ [0-9]* fail/.match(line)[0].to_s.split[1].to_f
           left = /\/ [0-9]* left/.match(line)[0].to_s.split[1].to_f
-          percentage=100*(run+done+failed)/(run+done+failed+left)
+          progress=100*(run+done+failed)/(run+done+failed+left)
           # set toolbar color 
           red=255*(failed)/(failed+done+run)
           blue=255*(run).to_f/(failed+done+run).to_f
           green=128*(done).to_f/(failed+done+run).to_f
           color="rgb(#{red.to_i},#{green.to_i},#{blue.to_i})"
-          if percentage!= 100 && (
+          if progress!= 100 && (
 	       CbrainTask::COMPLETED_STATUS.include?(self.status) ||
 	       CbrainTask::FAILED_STATUS.include?(self.status) ||
 	       self.status == "Post Processing" ||
 	       self.status == "Data Ready")
             color="red"
           end
-          if percentage==100
+          if progress==100
 	    color="green"
           end
           message="PSOM tasks: #{run.to_i} run / #{failed.to_i} fail / #{done.to_i} done / #{left.to_i} left"
         end
       end
     end 
-    return [color,percentage,message,true]
+    return {:color => color,:percentage => progress, :message => message, :show_percentage => true}
   end
   
 end
