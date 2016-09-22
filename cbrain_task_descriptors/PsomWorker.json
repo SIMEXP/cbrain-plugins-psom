@@ -1,7 +1,7 @@
 {
   "name": "PSOM Worker",
   "tool-version": "0.13.5",
-  "description": "An worker to execute PSOM tasks. Meant to be launched by PSOM itself.",
+  "description": "A worker to execute PSOM tasks. Meant to be launched by PSOM itself.",
   "command-line": "psom_worker.py [OUTPUT_DIR] [WORKER_ID]",
   "docker-image": "simexp/niak-boss:beta",
   "docker-index": "http://index.docker.io",

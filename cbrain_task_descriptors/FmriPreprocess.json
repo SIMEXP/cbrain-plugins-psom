@@ -68,7 +68,7 @@
     }, {
         "id": "subjects",
         "name": "Subjects to process",
-        "description": "Subject to be process by the pipeline",
+        "description": "Subjects to be processed by the pipeline",
         "type": "String",
         "command-line-key": "[SUBJECTS]",
         "list": false,
