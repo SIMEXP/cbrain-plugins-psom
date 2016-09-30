@@ -5,6 +5,7 @@
   "command-line": "psom_worker.py [OUTPUT_DIR] [WORKER_ID]",
   "docker-image": "simexp/niak-boss:beta",
   "docker-index": "http://index.docker.io",
+  "walltime-estimate": "259200",
   "schema-version": "0.2",
   "inputs": [
     {
