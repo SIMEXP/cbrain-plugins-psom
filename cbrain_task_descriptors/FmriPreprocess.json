@@ -1,13 +1,14 @@
 {
     "name": "Niak_fmri_preprocess",
-    "tool-version": "0.13.5",
+    "tool-version": "beta",
     "description": "fMRI pre-processing pipeline as available in Niak. More information at https://github.com/SIMEXP/niak",
-    "command-line": "/home/niak/util/bin/niak_cmd.py Niak_fmri_preprocess [FILE_IN] [FOLDER_OUT] [OPT_PSOM_MAX_QUEUED] [OPT_SLICE_TIMING_TYPE_SCANNER] [OPT_SLICE_TIMING_TYPE_ACQUISITION] [OPT_SLICE_TIMING_DELAY_IN_TR] [OPT_RESAMPLE_VOL_VOXEL_SIZE] [OPT_T1_PREPROCESS_NU_CORRECT_ARG] [OPT_TIME_FILTER_HP] [OPT_TIME_FILTER_LP] [OPT_REGRESS_CONFOUNDS_FLAG_GSC] [OPT_REGRESS_CONFOUNDS_FLAG_SCRUBBING] [OPT_REGRESS_CONFOUNDS_THRE_FD] [OPT_SMOOTH_VOL_FWHM] [SUBJECTS] [OPT_CORSICA_SICA_NB_COMP] [OPT_CORSICA_THRESHOLD] [OPT_CORSICA_FLAG_SKIP] [OPT_SIZE_OUTPUT] [OPT_MOTION_CORRECTION_SUPPRESS_VOL] [OPT_GRANULARITY] [EXTRA_ARGS]",
+    "command-line": "niak_cmd.py Niak_fmri_preprocess [FILE_IN] [FOLDER_OUT] [OPT_PSOM_MAX_QUEUED] [OPT_SLICE_TIMING_TYPE_SCANNER] [OPT_SLICE_TIMING_TYPE_ACQUISITION] [OPT_SLICE_TIMING_DELAY_IN_TR] [OPT_RESAMPLE_VOL_VOXEL_SIZE] [OPT_T1_PREPROCESS_NU_CORRECT_ARG] [OPT_TIME_FILTER_HP] [OPT_TIME_FILTER_LP] [OPT_REGRESS_CONFOUNDS_FLAG_GSC] [OPT_REGRESS_CONFOUNDS_FLAG_SCRUBBING] [OPT_REGRESS_CONFOUNDS_THRE_FD] [OPT_SMOOTH_VOL_FWHM] [SUBJECTS] [OPT_SIZE_OUTPUT] [OPT_MOTION_CORRECTION_SUPPRESS_VOL] [OPT_GRANULARITY] [EXTRA_ARGS]",
     "docker-image": "simexp/niak-boss:beta",
     "docker-index": "http://index.docker.io",
     "cbrain:can-submit-new-tasks": true,
     "cbrain:inherits-from-class": "CbrainTask::PsomPipelineTask",
     "schema-version": "0.2",
+    "walltime-estimate": 604800,
     "inputs": [{
         "id": "file_in",
         "name": "Input files",
@@ -18,7 +19,7 @@
         "optional": false,
         "command-line-flag": "--file_in"
     }, {
-        "id": "folder_out",
+        "id": "folder_out_name",
         "name": "Output folder name",
         "type": "String",
         "description": "The name of the output folder where results will be produced. Be careful, if a folder with the same name alreay exists on the same data provider, it's content will be overwritten. Output folder name must end with '.niak' for CBRAIN to use the correct file type.",
@@ -34,74 +35,50 @@
         "description": "Number of workers to use in PSOM. This is the maximum number of computing nodes that the pipeline will use. It should be adjusted depending on the number of subjects to be processed. Use the default value if you don't know how to set this parameter.",
         "command-line-key": "[OPT_PSOM_MAX_QUEUED]",
         "list": false,
-        "optional": true,
+        "optional": false,
         "command-line-flag": "--opt-psom-max_queued",
-        "default-value": 4
+        "default-value": 12,
+	"minimum": 12,
+	"maximum": 1200
     }, {
         "id": "opt_slice_timing_type_scanner",
         "name": "Slice timing type scanner",
-        "type": "String",
         "command-line-key": "[OPT_SLICE_TIMING_TYPE_SCANNER]",
         "list": false,
         "optional": false,
         "command-line-flag": "--opt-slice_timing-type_scanner",
-        "default-value": "Bruker"
+	"type": "Enum",
+        "enum-value-choices" : ["Siemens","Other"],
+        "default-value": "Siemens"
     }, {
         "id": "opt_granularity",
         "name": "Granularity",
         "description": "Level of granularity of the pipeline",
-        "type": "String",
+        "type": "Enum",
+        "enum-value-choices" : ["max","cleanup","subject"],
         "command-line-key": "[OPT_GRANULARITY]",
         "list": false,
-        "optional": true,
+        "optional": false,
         "command-line-flag": "--opt-granularity",
         "default-value": "max"
     }, {
-        "id": "opt_corsica_sica_nb_comp",
-        "name": "Corsica nb comp",
-        "description": "Correction of the physiological noise based on automatic component selection in an independent component analysis. Number of components to compute.",
-        "type": "Number",
-        "command-line-key": "[OPT_CORSICA_SICA_NB_COMP]",
-        "list": false,
-        "optional": true,
-        "command-line-flag": "--opt-corsica-sica-nb_comp"
-    }, {
         "id": "subjects",
         "name": "Subjects to process",
-        "description": "Subjects to be processed by the pipeline",
+        "description": "Subjects to be processed by the pipeline. Examples: (1) \"1,3-8\" will process subjects 1 to 8 except 2. (2) \"1-10-2\" will process subjects 1,3,5,7,9.",
         "type": "String",
         "command-line-key": "[SUBJECTS]",
         "list": false,
         "optional": true,
         "command-line-flag": "--subjects"
     }, {
-        "id": "opt_corsica_threshold",
-        "name": "Corsica threshold",
-        "description": "Correction of the physiological noise based on automatic component selection in an independent component analysis. Threshold on score for suppression.",
-        "type": "Number",
-        "command-line-key": "[OPT_CORSICA_THRESHOLD]",
-        "list": false,
-        "optional": true,
-        "command-line-flag": "--opt-corsica-threshold",
-        "default-value": 0.15
-    }, {
-        "id": "opt_corsica_flag_skip",
-        "name": "Corsica flag skip",
-        "description": "Correction of the physiological noise based on automatic component selection in an independent component analysis. If true, the brick does not do anything, just copying the inputs to the outputs.",
-        "type": "String",
-        "command-line-key": "[OPT_CORSICA_FLAG_SKIP]",
-        "list": false,
-        "optional": true,
-        "command-line-flag": "--opt-corsica-flag_skip",
-        "default-value": "false"
-    }, {
         "id": "opt_slice_timing_type_acquisition",
         "name": "Slice timing type acquisition",
-        "type": "String",
         "command-line-key": "[OPT_SLICE_TIMING_TYPE_ACQUISITION]",
         "list": false,
         "optional": false,
         "command-line-flag": "--opt-slice_timing-type_acquisition",
+	"type": "Enum",
+        "enum-value-choices" : ["sequential", "sequential ascending", "sequential descending", "interleaved", "interleaved ascending", "interleaved descending"],
         "default-value": "interleaved ascending"
     }, {
         "id": "opt_slice_timing_delay_in_tr",
@@ -120,8 +97,7 @@
         "command-line-key": "[OPT_RESAMPLE_VOL_VOXEL_SIZE]",
         "list": false,
         "optional": true,
-        "command-line-flag": "--opt-resample_vol-voxel_size",
-        "default-value": 10
+        "command-line-flag": "--opt-resample_vol-voxel_size"
     }, {
         "id": "opt_t1_preprocess_nu_correct_arg",
         "name": "T1 preprocess nu correct arg",
@@ -131,7 +107,7 @@
         "list": false,
         "optional": false,
         "command-line-flag": "--opt-t1_preprocess-nu_correct-arg",
-        "default-value": "-distance 75"
+        "default-value": "-distance 50"
     }, {
         "id": "opt_time_filter_hp",
         "name": "Time filter hp",
@@ -194,12 +170,13 @@
     }, {
         "id": "opt_size_output",
         "name": "Size output",
-        "type": "String",
+        "type": "Enum",
         "description":"The quantity of intermediate results that are generated.",
         "command-line-key": "[OPT_SIZE_OUTPUT]",
         "list": false,
-        "optional": true,
+        "optional": false,
         "command-line-flag": "--opt-size_output",
+	"enum-value-choices" : ["quality_control","all"],
         "default-value": "quality_control"
         
     }, {
@@ -209,9 +186,10 @@
         "description": "The number of volumes that are suppressed at the beginning of a time series",
         "command-line-key": "[OPT_MOTION_CORRECTION_SUPPRESS_VOL]",
         "list": false,
-        "optional": true,
+        "optional": false,
         "command-line-flag": "--opt-motion_correction-suppress_vol",
-        "default-value": 0 
+        "default-value": 0,
+	"integer": true
     }, {
         "id": "extra_args",
         "name": "Extra arguments",
@@ -229,5 +207,37 @@
         "path-template": "[FOLDER_OUT]",
         "list": false,
         "optional": false
-    }]
+    }],
+    "groups" : [
+         {
+         "id" : "input_data",
+         "name" : "Data",
+         "members" : [ "file_in", "subjects", "folder_out_name" ]
+         },
+        {
+        "id" : "slice_timing",
+        "name" : "Slice timing",
+        "members" : [ "opt_slice_timing_type_scanner", "opt_slice_timing_type_acquisition", "opt_slice_timing_delay_in_tr" ]
+        },
+        {
+        "id" : "time_filter",
+        "name" : "Time filter",
+        "members" : [ "opt_time_filter_hp", "opt_time_filter_lp" ]
+        },
+        {
+        "id" : "regress_confounds",
+        "name" : "Regress confounds",
+        "members" : [ "opt_regress_confounds_flag_gsc", "opt_regress_confounds_flag_scrubbing", "opt_regress_confounds_thre_fd"]
+        },
+        {
+        "id" : "psom_params",
+        "name" : "PSOM options",
+        "members" : [ "psom_max_queued", "opt_granularity" ]
+        },
+	{
+        "id" : "other_params",
+        "name" : "Other options",
+            "members" : [ "opt_smooth_vol_fwhm", "opt_resample_vol_voxel_size", "opt_t1_preprocess_nu_correct_arg", "opt_motion_correction_suppress_vol" , "extra_args", "opt_size_output" ]
+        }
+        ]
 }
