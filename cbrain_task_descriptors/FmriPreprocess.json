@@ -13,7 +13,7 @@
         "id": "file_in",
         "name": "Input files",
         "type": "File",
-        "description": "A directory containing input files.",
+        "description": "A directory containing input files. Warning: if the input directory is more than 100GB, please contact the PSOM team before launching the processing.",
         "command-line-key": "[FILE_IN]",
         "list": false,
         "optional": false,
