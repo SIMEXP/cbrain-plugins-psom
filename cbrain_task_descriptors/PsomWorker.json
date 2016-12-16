@@ -3,22 +3,23 @@
   "tool-version": "0.13.5",
   "description": "A worker to execute PSOM tasks. Meant to be launched by PSOM itself.",
   "command-line": "psom_worker.py [OUTPUT_DIR] [WORKER_ID]",
-  "docker-image": "simexp/niak-boss:beta",
-  "docker-index": "http://index.docker.io",
+  "container-image": {
+      "type": "docker",
+      "image": "simexp/niak-boss:beta",
+      "index": "http://index.docker.io"
+  }, 
   "walltime-estimate": 259200,
-  "schema-version": "0.2",
+  "schema-version": "0.4",
   "inputs": [
     {
       "id": "output_dir",
       "name": "Output directory",
       "type": "String",
       "description": "The output directory of the PSOM process that submits the worker. This directory needs to be accessible by the worker.",
-      "command-line-key": "[OUTPUT_DIR]",
+      "value-key": "[OUTPUT_DIR]",
       "list": false,
       "optional": false,
       "command-line-flag": "-d",
-      "required-inputs": [],
-      "disabled-by-inputs": [],
       "default-value": null
     },
     {
@@ -26,12 +27,10 @@
       "name": "Worker id",
       "type": "String",
       "description": "A string containing the PSOM worker id.",
-      "command-line-key": "[WORKER_ID]",
+      "value-key": "[WORKER_ID]",
       "list": false,
       "optional": false,
       "command-line-flag": "-w",
-      "required-inputs": [],
-      "disabled-by-inputs": [],
       "default-value": null
     }
   ],
