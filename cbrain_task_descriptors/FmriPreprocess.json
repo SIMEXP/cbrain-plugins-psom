@@ -2,10 +2,10 @@
     "name": "Niak_fmri_preprocess",
     "tool-version": "beta",
     "description": "fMRI pre-processing pipeline as available in Niak. More information at https://github.com/SIMEXP/niak",
-    "command-line": "niak_cmd.py Niak_fmri_preprocess [FILE_IN] [FOLDER_OUT] [OPT_PSOM_MAX_QUEUED] [OPT_SLICE_TIMING_TYPE_SCANNER] [OPT_SLICE_TIMING_TYPE_ACQUISITION] [OPT_SLICE_TIMING_DELAY_IN_TR] [OPT_RESAMPLE_VOL_VOXEL_SIZE] [OPT_T1_PREPROCESS_NU_CORRECT_ARG] [OPT_TIME_FILTER_HP] [OPT_TIME_FILTER_LP] [OPT_REGRESS_CONFOUNDS_FLAG_GSC] [OPT_REGRESS_CONFOUNDS_FLAG_SCRUBBING] [OPT_REGRESS_CONFOUNDS_THRE_FD] [OPT_SMOOTH_VOL_FWHM] [SUBJECTS] [OPT_SIZE_OUTPUT] [OPT_MOTION_CORRECTION_SUPPRESS_VOL] [OPT_GRANULARITY] [EXTRA_ARGS]",
+    "command-line": "niak_cmd.py Niak_fmri_preprocess [FILE_IN] [FOLDER_OUT] [OPT_PSOM_MAX_QUEUED] [OPT_SLICE_TIMING_TYPE_SCANNER] [OPT_SLICE_TIMING_TYPE_ACQUISITION] [OPT_SLICE_TIMING_DELAY_IN_TR] [OPT_RESAMPLE_VOL_VOXEL_SIZE] [OPT_T1_PREPROCESS_NU_CORRECT_ARG] [OPT_TIME_FILTER_HP] [OPT_TIME_FILTER_LP] [OPT_REGRESS_CONFOUNDS_FLAG_GSC] [OPT_REGRESS_CONFOUNDS_FLAG_SCRUBBING] [OPT_REGRESS_CONFOUNDS_THRE_FD] [OPT_SMOOTH_VOL_FWHM] [SUBJECTS] [OPT_MOTION_CORRECTION_SUPPRESS_VOL] [FMRI_INPUT_FILTER] [EXTRA_ARGS]",
     "container-image": {
         "type": "docker",
-        "image": "simexp/niak-boss:beta",
+        "image": "simexp/niak-cog:beta",
         "index" : "http://index.docker.io"
     },
     "schema-version": "0.4",
@@ -52,16 +52,14 @@
         "value-choices" : ["Siemens","Other"],
         "default-value": "Siemens"
     }, {
-        "id": "opt_granularity",
-        "name": "Granularity",
-        "description": "Level of granularity of the pipeline",
+        "id": "fmri_input_filter",
+        "name": "Filter to select a specific fmri scan ",
+        "description": "If there is many fmri run in you data, you can preprocess them all of select them with this filter. Let say you have SubXXXX_SesX_BOLD1.nii.gz, SubXXXX_SesX_BOLD2.nii.gz and  SubXXXX_SesX_Trout.nii.gz, and you only whan SubXXX_SesX_BOLD1.nii.gz to be used, type BOLD1 to only select them. This filter recongnize regex, so BOLD.* would filter out SubXXXX_SesX_Trout.nii.gz and keep and BOLD inputs",
         "type": "String",
-        "value-choices" : ["max","cleanup","subject"],
-        "value-key": "[OPT_GRANULARITY]",
+        "value-key": "[FMRI_INPUT_FILTER]",
         "list": false,
-        "optional": false,
-        "command-line-flag": "--opt-granularity",
-        "default-value": "max"
+        "optional": true,
+        "command-line-flag": "--fmri_input_filter"
     }, {
         "id": "subjects",
         "name": "Subjects to process",
@@ -108,7 +106,7 @@
         "list": false,
         "optional": false,
         "command-line-flag": "--opt-t1_preprocess-nu_correct-arg",
-        "default-value": "-distance 50"
+        "default-value": "-distance 75"
     }, {
         "id": "opt_time_filter_hp",
         "name": "Time filter hp",
@@ -169,18 +167,6 @@
         "command-line-flag": "--opt-smooth_vol-fwhm",
         "default-value": 6
     }, {
-        "id": "opt_size_output",
-        "name": "Size output",
-        "type": "String",
-        "description":"The quantity of intermediate results that are generated.",
-        "value-key": "[OPT_SIZE_OUTPUT]",
-        "list": false,
-        "optional": false,
-        "command-line-flag": "--opt-size_output",
-        "value-choices" : ["quality_control","all"],
-        "default-value": "quality_control"
-        
-    }, {
         "id": "opt_motion_correction_suppress_vol",
         "name": "Motion correction suppress vol",
         "type": "Number",
@@ -195,7 +181,7 @@
         "id": "extra_args",
         "name": "Extra arguments",
         "type": "String",
-        "description": "Extra arguments passed to niak_cmd",
+        "description": "Extra arguments passed to niak_cmd for expert users.",
         "value-key": "[EXTRA_ARGS]",
         "list": false,
         "optional": true
@@ -213,7 +199,7 @@
          {
          "id" : "input_data",
          "name" : "Data",
-         "members" : [ "file_in", "subjects", "folder_out_name" ]
+         "members" : [ "file_in", "subjects", "folder_out_name", "fmri_input_filter" ]
          },
         {
         "id" : "slice_timing",
@@ -233,12 +219,12 @@
         {
         "id" : "psom_params",
         "name" : "PSOM options",
-        "members" : [ "psom_max_queued", "opt_granularity" ]
+        "members" : [ "psom_max_queued" ]
         },
         {
         "id" : "other_params",
         "name" : "Other options",
-            "members" : [ "opt_smooth_vol_fwhm", "opt_resample_vol_voxel_size", "opt_t1_preprocess_nu_correct_arg", "opt_motion_correction_suppress_vol" , "extra_args", "opt_size_output" ]
+            "members" : [ "opt_smooth_vol_fwhm", "opt_resample_vol_voxel_size", "opt_t1_preprocess_nu_correct_arg", "opt_motion_correction_suppress_vol" , "extra_args" ]
         }
     ],
     "custom": {
