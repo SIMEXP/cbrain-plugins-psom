@@ -8,7 +8,7 @@
         "url": "docker://simexp/niak-cog:beta"
     },
     "schema-version": "0.4",
-    "walltime-estimate": 604800,
+    "walltime-estimate": 604200,
     "inputs": [{
         "id": "file_in",
         "name": "Input files",
