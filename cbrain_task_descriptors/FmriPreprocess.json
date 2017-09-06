@@ -1,4 +1,4 @@
-readonly-input-files{
+{
     "name": "Niak_fmri_preprocess",
     "tool-version": "beta",
     "description": "fMRI pre-processing pipeline as available in Niak. More information at https://github.com/SIMEXP/niak",
