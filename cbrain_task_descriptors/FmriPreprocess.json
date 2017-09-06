@@ -246,6 +246,7 @@
     ],
     "custom": {
         "cbrain:can-submit-new-tasks": true,
+        "cbrain:readonly-input-files": true,
         "cbrain:inherits-from-class": "CbrainTask::PsomPipelineTask"
     }
 }
