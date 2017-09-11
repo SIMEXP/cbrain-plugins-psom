@@ -2,7 +2,7 @@
     "name": "Niak_fmri_preprocess",
     "tool-version": "beta",
     "description": "fMRI pre-processing pipeline as available in Niak. More information at https://github.com/SIMEXP/niak",
-    "command-line": "niak_cmd.py Niak_fmri_preprocess [FILE_IN] [FOLDER_OUT] [OPT_PSOM_MAX_QUEUED] [OPT_SLICE_TIMING_TYPE_SCANNER] [OPT_SLICE_TIMING_TYPE_ACQUISITION] [OPT_SLICE_TIMING_DELAY_IN_TR] [OPT_RESAMPLE_VOL_VOXEL_SIZE] [OPT_T1_PREPROCESS_NU_CORRECT_ARG] [OPT_TIME_FILTER_HP] [OPT_TIME_FILTER_LP] [OPT_REGRESS_CONFOUNDS_FLAG_GSC] [OPT_REGRESS_CONFOUNDS_FLAG_SCRUBBING] [OPT_REGRESS_CONFOUNDS_THRE_FD] [OPT_SMOOTH_VOL_FWHM] [SUBJECTS] [ANAT_HINT] [FUNC_HINT] [OPT_MOTION_CORRECTION_SUPPRESS_VOL] [FMRI_INPUT_FILTER] [EXTRA_ARGS]",
+    "command-line": "niak_cmd.py Niak_fmri_preprocess [FILE_IN] [FOLDER_OUT] [OPT_PSOM_MAX_QUEUED] [OPT_SLICE_TIMING_TYPE_SCANNER] [OPT_SLICE_TIMING_TYPE_ACQUISITION] [OPT_SLICE_TIMING_DELAY_IN_TR] [OPT_RESAMPLE_VOL_VOXEL_SIZE] [OPT_T1_PREPROCESS_NU_CORRECT_ARG] [OPT_TIME_FILTER_HP] [OPT_TIME_FILTER_LP] [OPT_REGRESS_CONFOUNDS_FLAG_GSC] [OPT_REGRESS_CONFOUNDS_FLAG_SCRUBBING] [OPT_REGRESS_CONFOUNDS_THRE_FD] [OPT_SMOOTH_VOL_FWHM] [SUBJECTS] [ANAT_HINT] [FUNC_HINT] [OPT_MOTION_CORRECTION_SUPPRESS_VOL] [EXTRA_ARGS]",
     "container-image": {
         "type": "singularity",
         "url": "docker://simexp/niak-cog:beta"
@@ -51,18 +51,9 @@
         "value-choices" : ["Siemens","Other"],
         "default-value": "Siemens"
     }, {
-        "id": "fmri_input_filter",
-        "name": "Filter to select a specific fmri scan ",
-        "description": "If there is many fmri run in you data, you can preprocess them all of select them with this filter. Let say you have SubXXXX_SesX_BOLD1.nii.gz, SubXXXX_SesX_BOLD2.nii.gz and  SubXXXX_SesX_Trout.nii.gz, and you only whan SubXXX_SesX_BOLD1.nii.gz to be used, type BOLD1 to only select them. This filter recongnize regex, so BOLD.* would filter out SubXXXX_SesX_Trout.nii.gz and keep and BOLD inputs",
-        "type": "String",
-        "value-key": "[FMRI_INPUT_FILTER]",
-        "list": false,
-        "optional": true,
-        "command-line-flag": "--fmri_input_filter"
-    }, {
         "id": "anat_hint",
-        "name": "hint to select anatomacal scans",
-        "description": "A hint to pick one out of many anatomical scans. For example if the fmri study includes 'sub-XX_T1.nii.gz' and 'sub-XX_T1w.nii.gz' and you need the 'T1', '--anat_hint in_pace' would do the trick",
+        "name": "hint to select anatomical scans",
+        "description": "A hint to pick one out of many anatomical scans. For example if the fmri study includes 'sub-XX_T1.nii.gz' and 'sub-XX_T1w.nii.gz' and you need the 'T1', '--func_hint _T1.' would do the trick",
         "type": "String",
         "value-key": "[ANAT_HINT]",
         "list": false,
@@ -71,7 +62,7 @@
     }, {
         "id": "func_hint",
         "name": "hint to select functional scans",
-        "description": "A hint to pick one out of many functional scans. For example if the fmri study includes 'sub-XX_task-rest-in_pace_bold.nii.gz' and 'sub-XX_task-rest-a_thing_bold.nii.gz' and you need the 'in_pace' flavor '--func_hint in_pace' would do the trick",
+        "description": "A hint to pick one out of many functional scans. For example if the fmri study includes 'sub-XX_task-rest-inpace_bold.nii.gz' and 'sub-XX_task-rest-again.nii.gz' and you need the 'inpace' flavor '--func_hint inpace' would do the trick.",
         "type": "String",
         "value-key": "[FUNC_HINT]",
         "list": false,
@@ -216,7 +207,7 @@
          {
          "id" : "input_data",
          "name" : "Data",
-         "members" : [ "file_in", "subjects", "folder_out_name", "fmri_input_filter", "anat_hint", "func_hint"]
+         "members" : [ "file_in", "subjects", "folder_out_name", "anat_hint", "func_hint"]
          },
         {
         "id" : "slice_timing",
