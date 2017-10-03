@@ -1,6 +1,6 @@
 {
     "name": "Niak_fmri_preprocess",
-    "command-line": "niak_cmd.py Niak_fmri_preprocess [FILE_IN] [FOLDER_OUT] [OPT_PSOM_MAX_QUEUED] [OPT_SLICE_TIMING_TYPE_SCANNER] [OPT_SLICE_TIMING_TYPE_ACQUISITION] [OPT_SLICE_TIMING_DELAY_IN_TR] [OPT_RESAMPLE_VOL_VOXEL_SIZE] [OPT_T1_PREPROCESS_NU_CORRECT_ARG] [OPT_TIME_FILTER_HP] [OPT_TIME_FILTER_LP] [OPT_REGRESS_CONFOUNDS_FLAG_GSC] [OPT_REGRESS_CONFOUNDS_FLAG_SCRUBBING] [OPT_REGRESS_CONFOUNDS_THRE_FD] [OPT_SMOOTH_VOL_FWHM] [SUBJECTS] [ANAT_HINT] [FUNC_HINT] [OPT_MOTION_CORRECTION_SUPPRESS_VOL] [EXTRA_ARGS]",
+    "command-line": "niak_cmd.py Niak_fmri_preprocess [FILE_IN] [FOLDER_OUT] [OPT_PSOM_MAX_QUEUED] [OPT_SLICE_TIMING_FLAG_SKIP] [OPT_SLICE_TIMING_TYPE_SCANNER] [OPT_SLICE_TIMING_TYPE_ACQUISITION] [OPT_SLICE_TIMING_DELAY_IN_TR] [OPT_RESAMPLE_VOL_VOXEL_SIZE] [OPT_T1_PREPROCESS_NU_CORRECT_ARG] [OPT_TIME_FILTER_HP] [OPT_TIME_FILTER_LP] [OPT_REGRESS_CONFOUNDS_FLAG_GSC] [OPT_REGRESS_CONFOUNDS_FLAG_SCRUBBING] [OPT_REGRESS_CONFOUNDS_THRE_FD] [OPT_SMOOTH_VOL_FWHM] [SUBJECTS] [ANAT_HINT] [FUNC_HINT] [OPT_MOTION_CORRECTION_SUPPRESS_VOL] [EXTRA_ARGS]",
     "container-image": {
         "type": "singularity",
         "image": "simexp/niak-cog:beta",
@@ -17,7 +17,7 @@
         }
     ],
     "suggested-resources": {
-        "walltime-estimate": 273000
+        "walltime-estimate": 255000
     },
     "groups": [
         {
@@ -35,6 +35,7 @@
             "name": "Slice timing",
             "members": [
                 "opt_slice_timing_type_scanner",
+                "opt_slice_timing_flag_skip",
                 "opt_slice_timing_type_acquisition",
                 "opt_slice_timing_delay_in_tr"
             ],
@@ -130,6 +131,16 @@
             ],
             "optional": false,
             "id": "opt_slice_timing_type_scanner"
+        },
+        {
+            "name": "Skip slice timing",
+            "type": "Flag",
+            "command-line-flag": "--opt-slice_timing-flag_skip",
+            "list": false,
+            "value-key": "[OPT_SLICE_TIMING_FLAG_SKIP]",
+            "optional": true,
+            "description": "Skip all slice timing procedures",
+            "id": "opt_slice_timing_flag_skip"
         },
         {
             "name": "hint to select anatomical scans",
