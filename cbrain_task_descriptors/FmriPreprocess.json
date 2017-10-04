@@ -134,10 +134,15 @@
         },
         {
             "name": "Skip slice timing",
-            "type": "Flag",
+            "type": "String",
             "command-line-flag": "--opt-slice_timing-flag_skip",
             "list": false,
             "value-key": "[OPT_SLICE_TIMING_FLAG_SKIP]",
+            "default-value": "false",
+            "value-choices": [
+                "false",
+                "true"
+            ],
             "optional": true,
             "description": "Skip all slice timing procedures",
             "id": "opt_slice_timing_flag_skip"
