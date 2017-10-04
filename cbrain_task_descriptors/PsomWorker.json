@@ -3,7 +3,7 @@
     "name": "PSOM Worker",
     "container-image": {
         "type": "singularity",
-        "image": "simexp/niak-boss:beta",
+        "image": "simexp/niak-cog:1.1.4",
         "index": "docker://"
     },
     "command-line": "psom_worker.py [OUTPUT_DIR] [WORKER_ID]",
