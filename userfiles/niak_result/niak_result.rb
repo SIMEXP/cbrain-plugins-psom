@@ -47,188 +47,48 @@ class NiakResult < FileCollection
   # HTML code.  It is recursively called for each iframe contained in
   # the page.
   # Parameters:
-  #  * file_path: the path of the HTML file whose content will be read, modified and returned. 
+  #  * file_path: the path of the HTML file whose content will be read, modified and returned.
   #  * dir_name: the directory name of the HTML file in the melodic file collection.
   ##################################################################################################
 
- 
+
   def modified_file_content file_path,dir_name
     return nil unless File.exists?(file_path)
-    
-    file_contents = File.open(file_path).read    
 
-    # Other pages
+    file_contents = File.open(file_path).read
+
     lines = Array.new
     # The file is processed line by line to speed up substitutions.
+    is_motion_directory = /report\/motion\/.*$/.match file_path.to_s
     file_contents.each_line do |line|
+      line_dir_name = dir_name
       new_line = line
-      # Tweaks hrefs.
-      new_line = tweak_hrefs_in_line(line,dir_name)
-      # Tweaks imgs.
-      new_line = tweak_imgs_in_line(new_line,"#{dir_name}")
-      lines << new_line 
+      if is_motion_directory and !(/\.\.\//.match new_line)
+        line_dir_name += "motion/"
+      else
+        new_line = new_line.gsub /\.\.\//, ''
+      end
+      new_line = new_line.gsub /(src|href)\s*=\s*"(.*)"/, "\\1=\"#{line_dir_name}\\2\""
+      if /url\(.*\);.*$/.match new_line
+        new_line = new_line.gsub /url\(('|")?([^'"+]*)(.*[^'"]*)('|")?\)/, "url\(\\1#{line_dir_name}\\2\\3\\4\)"
+      else
+        new_line = new_line.gsub /url\((.*)\)/, "url\(#{line_dir_name}\\1\)"
+      end
+      lines << new_line
     end
     return lines.join
   end
+  def remove_source_maps file_path
+    return nil unless File.exists?(file_path)
 
-  ##################
-  # Helper methods #
-  ##################
-  
-  private
+    file_contents = File.open(file_path).read
 
-  # Appends a string to the href attribute of a link, making sure that the string is appended after 'key'.
-  # Examples:
-  # * href attribute is not quoted (not sure it's valid, but it happens in FSL pages)
-  #    append_string_to_link("<a href=someplace?file_name=foo&param=bar   > hello","file_name","AAA")
-  #         => "<a href=someplace?file_name=foo&param=barAAA   > hello"
-  # * href attribute is quoted, and it has trailing spaces.
-  #      append_string_to_link "<a href=\"someplace?file_name=foo&param=bar \"   > hello","file_name","AAA"
-  #         => "<a href=\"someplace?file_name=foo&param=barAAA \"   > hello"
-  # * another attribute is after href
-  #    append_string_to_link "<a href=\"someplace?file_name=foo&param=bar alt=\"coin\"   > hello","file_name","AAA"
-  #        => "<a href=\"someplace?file_name=foo&param=barAAA alt=\"coin\"   > hello"
-  # * another tag is before href, that contains the string "href"
-  #    append_string_to_link "<a alt=\"href link\" href=\"someplace?file_name=foo&param=bar \"   > hello","file_name","AAA"
-  #        => "<a alt=\"href link\" href=\"someplace?file_name=foo&param=barAAA \"   > hello"
-  def append_string_to_link link,key,string
-    new_link = link
-    return link if (! key.present?) || new_link.index(key).nil?
-    index_space = new_link.index(' ',new_link.index(key))
-    index_quote = new_link.index('"',new_link.index(key))
-    index_greater = new_link.index('>',new_link.index(key))
-    index_min = [index_space,index_quote,index_greater].compact.min 
-    return link if index_min.nil?
-    new_link.insert(index_min,string)
-    return new_link
-  end
-
-  # Modifies the href attribute of a link.
-  def tweak_href_of_link link,dir_name
-
-    
-    if link.downcase.include?("http") || link.downcase.include?("img") 
-      # do not tweak links that are external URLs
-      return link
-    end
-
-    if link.include?("newFigBOLD") || link.include?("newFigT1")
-      return link
-    end
-
-    link = link.gsub("\$&",'\\$&')
-    link = link.gsub("/g","\\ \+/g")
-    
-    if link.include?("url(")
-      link =  link.gsub(/url\((.*?)\)/) { |x| "url(content?arguments=@dirname"+$1+"&content_loader=collection_file&content_viewer=off&viewer=image_file&viewer_userfile_class=ImageFile)"}
-      return link.gsub("@dirname","#{dir_name}").gsub("group/","group%2F").gsub("/","%2F")
-    end
-    
-    if link.downcase.include?("css") || link.downcase.include?("assets")
-      return link.gsub("assets","/cbrain_plugins/userfiles/niak_result/assets")
-              .gsub("..","")
-              .gsub("motion.css","/cbrain_plugins/userfiles/niak_result/motion.css")
-              .gsub("//","/")
-    end
-
-    
-    new_link = link
-    new_link = new_link.gsub(/HREF="/i,'href="content?arguments=@dirname')
-               .gsub("summary/","summary%2F")
-               .gsub("group/","group%2F")
-
-      new_link = new_link.gsub(/src="/i,'src="content?arguments=@dirname')
-               .gsub("summary/","summary%2F")
-               .gsub("group/","group%2F")
-
-      
-    new_link.gsub!("userfile.id","#{self.id}")
-    new_link.gsub!("@dirname","#{dir_name}")
-    new_link.gsub!('/"',"/")
-
-    # Append #file_content to the URL
-    new_link = append_string_to_link(new_link,"arguments","&content_loader=html_file")
-
-    new_link.gsub!(/file_name=(.*?)gica\//,"file_name=")
-    
-    return new_link
-  end
-
-  # Modifies all the hrefs in a line. 
-  def tweak_hrefs_in_line line,dir_name
-    new_line = line
-    line.split(/<a/i).each do |link|
-      next if link == ""
-      new_link = tweak_href_of_link(link,dir_name)
-      new_line = new_line.gsub(link,new_link)
-    end
-    return new_line
-  end
-
-  # Modifies the src attribute of an img. 
-  def tweak_img link,dir_name
-    new_link = link
-    if link.downcase.include? "http"
-      # do not tweak links that are external URLs
-      return link
-    end
-    if new_link.downcase.gsub(" ","").include?("src=\"")
-      new_link = new_link.gsub(/src="/i,'src="content?arguments=@dirname')
-    else
-      new_link = new_link.gsub(/src=/i,'src=content?arguments=@dirname')
-    end
-    new_link.gsub!("userfile.id","#{self.id}")
-    new_link.gsub!("@dirname","#{dir_name}")
-    new_link.gsub!('/"',"/")            
-
-    new_link = append_string_to_link(new_link,"arguments","&content_loader=collection_file&content_viewer=off&viewer=image_file&viewer_userfile_class=ImageFile")
-    new_link.gsub!(/gica(.*?)gica/,"gica")
-    
-    return new_link
-  end
-  
-  # Modifies all the imgs found in a line.
-  def tweak_imgs_in_line line,dir_name
-    new_line = line
-    line.scan(/<img.*>/i) do |img,y|
-      new_img = tweak_img(img,dir_name)
-      new_line = new_line.gsub(img,new_img)
-    end
-    return new_line
-  end
-
-  # Re-build a complete page with correct links for the first-level
-  # report (report_firstlevel.html) in group analyses.
-  def modify_report_first_level
     lines = Array.new
-    lines << "<h2>Inputs to higher-level analysis</h2>(lower-level processing)<p>"
-    input_files = Userfile.where(:parent_id => self.id)
-    if input_files.empty?
-      lines << "No input file found."
-    else
-      input_files.each_with_index do |f,i|
-        lines << "#{i} <a href=\"#{f.id}\">#{f.name}</a><br/>"
-      end
+    file_contents.each_line do |line|
+      lines << line unless line =~ /\/\/# sourceMappingURL/
     end
-    return lines
+    return lines.join
   end
-
-  # Re-build a complete page for high-level registration report
-  def modify_high_level_reg_report
-    lines = Array.new
-    lines << "<h2>Summary of first-level registrations and masks</h2> <p><b>Summaries of functional-to-standard registrations for all inputs</b><br>"
-    input_files = Userfile.where(:parent_id => self.id)
-    if input_files.empty?
-      lines << "No input file found."
-    else
-      input_files.each_with_index do |f,i|
-        lines << "#{i} <a href=\"#{f.id}?file_name=report_reg.html\">#{f.name}</a><br/>"
-        lines << "<IMG BORDER=0 SRC=#{f.id}/content?arguments=#{f.name}/reg/example_func2standard1.png&content_loader=collection_file&content_viewer=off&viewer=image_file&viewer_userfile_class=ImageFile WIDTH=100%>"
-      end
-    end
-    return lines
-  end
-
   # Content loader
   def html_file(path_string)
     return nil unless self.list_files.find { |f| f.name == path_string }
@@ -237,14 +97,26 @@ class NiakResult < FileCollection
 
     return nil unless File.exist?(path) and File.readable?(path) and !(File.directory?(path) || File.symlink?(path) )
 
-    begin
-      File.open("/tmp/file.html", 'w') { |file| file.write(modified_file_content(path,"results-directory-with-viewer%2Freport%2F")) }
-    rescue => ex
-      File.open("/tmp/file.html", 'w') { |file| file.write("#{path}"+"\n"+ex.message) }
-
+    if path.extname == '.html'
+      begin
+        File.open("/tmp/file.html", 'w') { |file| file.write(modified_file_content(path, "/userfiles/#{self.id}/content?content_loader=html_file&arguments=#{self.name}/report/")) }
+      rescue => ex
+        File.open("/tmp/file.html", 'w') { |file| file.write("#{path}"+"\n"+ex.message) }
+      end
+      return "/tmp/file.html"
     end
-    
-    "/tmp/file.html"
+
+    if path.extname == '.js'
+      begin
+        File.open("/tmp/file.js", 'w') { |file| file.write(remove_source_maps(path)) }
+      rescue => ex
+        File.open("/tmp/file.js", 'w') { |file| file.write("#{path}"+"\n"+ex.message) }
+      end
+      return "/tmp/file.js"
+    end
+
+    FileUtils.cp path, "/tmp"
+    "/tmp/#{path.basename}"
   end
-  
+
 end

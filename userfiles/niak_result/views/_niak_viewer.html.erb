@@ -22,7 +22,22 @@
 #
 -%>
 
+<style>
+.frame {
+    width: 700px;
+    height: 600px;
+    border: 0;
+}
+</style>
+
+<% result_url = "http://localhost:3000/userfiles/#{@userfile.id}/content?content_loader=html_file&arguments=#{@userfile.name}/report/index.html" %>
 
 <br/>
 
-<iframe width=100% src="http://localhost:3000/userfiles/876/content?arguments=results-directory-with-viewer%2Freport%2Findex.html&content_loader=html_file"/>
+<a target="_blank" href="<%= result_url %>">
+  Open viewer in a new window
+</a>
+
+<br/>
+
+<iframe class="frame" src="<%= result_url %>" />
