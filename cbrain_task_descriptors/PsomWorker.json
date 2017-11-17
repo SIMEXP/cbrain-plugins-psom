@@ -34,7 +34,7 @@
     "description": "A worker to execute PSOM tasks. Meant to be launched by PSOM itself.",
     "tool-version": "beta",
     "suggested-resources": {
-        "walltime-estimate": 86000
+        "walltime-estimate": 10799
     },
     "output-files": []
 }
