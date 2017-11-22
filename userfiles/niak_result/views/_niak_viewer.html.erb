@@ -22,22 +22,12 @@
 #
 -%>
 
-<style>
-.frame {
-    width: 700px;
-    height: 600px;
-    border: 0;
-}
-</style>
-
-<% result_url = "http://localhost:3000/userfiles/#{@userfile.id}/content?content_loader=html_file&arguments=#{@userfile.name}/report/index.html" %>
-
 <br/>
 
-<a target="_blank" href="<%= result_url %>">
-  Open viewer in a new window
-</a>
-
-<br/>
-
-<iframe class="frame" src="<%= result_url %>" />
+<%= link_to(
+    "Click here to see the NIAK report in a new window.",
+    "#{@userfile.id}/file_collection_content/report/index.html",
+    :class  => "action_link",
+    :target => "_blank",
+  )
+%>
