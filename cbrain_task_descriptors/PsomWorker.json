@@ -1,38 +1,40 @@
 {
-  "name": "PSOM Worker",
-  "tool-version": "0.13.5",
-  "description": "A worker to execute PSOM tasks. Meant to be launched by PSOM itself.",
-  "command-line": "psom_worker.py [OUTPUT_DIR] [WORKER_ID]",
-  "container-image": {
-      "type": "docker",
-      "image": "simexp/niak-boss:beta",
-      "index": "http://index.docker.io"
-  }, 
-  "walltime-estimate": 259200,
-  "schema-version": "0.4",
-  "inputs": [
-    {
-      "id": "output_dir",
-      "name": "Output directory",
-      "type": "String",
-      "description": "The output directory of the PSOM process that submits the worker. This directory needs to be accessible by the worker.",
-      "value-key": "[OUTPUT_DIR]",
-      "list": false,
-      "optional": false,
-      "command-line-flag": "-d",
-      "default-value": null
+    "schema-version": "0.5",
+    "name": "PSOM Worker",
+    "container-image": {
+        "type": "singularity",
+        "image": "simexp/niak-boss:beta",
+        "index": "docker://"
     },
-    {
-      "id": "worker_id",
-      "name": "Worker id",
-      "type": "String",
-      "description": "A string containing the PSOM worker id.",
-      "value-key": "[WORKER_ID]",
-      "list": false,
-      "optional": false,
-      "command-line-flag": "-w",
-      "default-value": null
-    }
-  ],
-  "output-files": []
+    "command-line": "psom_worker.py [OUTPUT_DIR] [WORKER_ID]",
+    "inputs": [
+        {
+            "name": "Output directory",
+            "value-key": "[OUTPUT_DIR]",
+            "optional": false,
+            "description": "The output directory of the PSOM process that submits the worker. This directory needs to be accessible by the worker.",
+            "type": "String",
+            "default-value": null,
+            "id": "output_dir",
+            "command-line-flag": "-d",
+            "list": false
+        },
+        {
+            "name": "Worker id",
+            "value-key": "[WORKER_ID]",
+            "optional": false,
+            "description": "A string containing the PSOM worker id.",
+            "type": "String",
+            "default-value": null,
+            "id": "worker_id",
+            "command-line-flag": "-w",
+            "list": false
+        }
+    ],
+    "description": "A worker to execute PSOM tasks. Meant to be launched by PSOM itself.",
+    "tool-version": "beta",
+    "suggested-resources": {
+        "walltime-estimate": 86000
+    },
+    "output-files": []
 }
