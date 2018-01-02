@@ -22,7 +22,12 @@
 #
 -%>
 
-
 <br/>
 
-<iframe width=100% src="http://localhost:3000/userfiles/876/content?arguments=results-directory-with-viewer%2Freport%2Findex.html&content_loader=html_file"/>
+<%= link_to(
+    "Click here to see the NIAK report in a new window.",
+    "#{@userfile.id}/file_collection_content/report/index.html",
+    :class  => "action_link",
+    :target => "_blank",
+  )
+%>
