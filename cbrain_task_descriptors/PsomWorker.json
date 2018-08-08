@@ -36,5 +36,15 @@
     "suggested-resources": {
         "walltime-estimate": 10799
     },
-    "output-files": []
+    "output-files": [
+        {
+            "name": "Output folder",
+            "id": "folder_out",
+            "list": false,
+            "path-template": "[OUTPUT_DIR]",
+            "optional": false,
+            "description": "A folder containing the output files."
+        }
+
+    ]
 }
