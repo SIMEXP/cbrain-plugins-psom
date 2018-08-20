@@ -36,5 +36,12 @@
     "suggested-resources": {
         "walltime-estimate": 10799
     },
-    "output-files": []
+    "output-files": [
+       {
+          "id": "output_log",
+          "name": "Output log",
+          "path-template": "output.log",
+          "optional": true
+       }
+    ]
 }
